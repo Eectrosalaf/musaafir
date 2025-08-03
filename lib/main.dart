@@ -1,9 +1,12 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:musaafir/screens/details.dart';
 import 'package:musaafir/screens/forgotpassword.dart';
+import 'package:musaafir/screens/home.dart';
 import 'package:musaafir/screens/login.dart';
 import 'package:musaafir/screens/signup.dart';
+import 'package:musaafir/screens/view.dart';
 
 import 'screens/splash.dart';
 import 'screens/onboarding.dart';
@@ -28,11 +31,15 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
+        '/home': (context) => const HomeScreen(),
         '/': (context) => const SplashScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginScreen(), 
         '/signup': (context) => const SignupScreen(),
         '/forgotpassword': (context) => const ForgotPasswordScreen(),
+         
+        '/details': (context) => const DetailsScreen(),
+        '/view': (context) => const ViewScreen(),
       },
     );
   }

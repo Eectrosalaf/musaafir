@@ -77,7 +77,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       child: Image.asset(
                         data.image,
                         width: SizeConfig.screenW,
-                        height: imageHeight*1.2,
+                        height: imageHeight*1.1,
                         fit: BoxFit.cover,
                       ),
                     ),
