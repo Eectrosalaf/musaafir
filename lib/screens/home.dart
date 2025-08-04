@@ -1,9 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 import '../utils/screensize.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  String? userName;
+  bool isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+  }
+   Future<void> fetchUserName() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        setState(() {
+          userName = doc.data()?['name'] ?? 'User';
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        userName = 'User';
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +44,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
-      bottomNavigationBar: _BottomNavBar(selectedIndex: 0),
+      //bottomNavigationBar: _BottomNavBar(selectedIndex: 0),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -26,62 +59,65 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
 
-                  SizedBox(
-                  width: SizeConfig.blockV! * 15,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: DesignColors.activeTextColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(SizeConfig.blockH! * 4),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: SizeConfig.blockV! * 0.4,
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                         Padding(
-                           padding: const EdgeInsets.only(left: 3,right: 4),
-                           child: CircleAvatar(
-                                               backgroundColor: Colors.white,
-                                               radius: SizeConfig.blockH! * 4,
-                                               child: Icon(Icons.person, color: DesignColors.primaryColor),
-                                             ),
-                         ),
-                        //_socialIcon( Colors.red),
-                        // SizedBox(width: SizeConfig.blockH! * 8),
-                        Text(
-                          "taiwo",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: SizeConfig.blockH! * 4,
-                          ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                    width: SizeConfig.blockV! * 20,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: DesignColors.activeTextColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(SizeConfig.blockH! * 4),
                         ),
-                      ],
+                        padding: EdgeInsets.symmetric(
+                          vertical: SizeConfig.blockV! * 0.4,
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                           Padding(
+                             padding: const EdgeInsets.only(left: 3,right: 4),
+                             child: CircleAvatar(
+                                                 backgroundColor: Colors.white,
+                                                 radius: SizeConfig.blockH! * 4,
+                                                 child: Icon(Icons.person, color: DesignColors.primaryColor),
+                                               ),
+                           ),
+                          //_socialIcon( Colors.red),
+                          // SizedBox(width: SizeConfig.blockH! * 8),
+                          Text(
+                             isLoading ? "..." : (userName ?? "User"),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: SizeConfig.blockH! * 4,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                                    ),
                   ),
-                ),
                  
                   CircleAvatar(
                     backgroundColor:DesignColors.backgroundColorInactive, 
-                    radius: SizeConfig.blockH! * 4,
+                    radius: SizeConfig.blockV! * 2.5,
                     child: IconButton(
                       icon: Icon(Icons.notifications_none,
                           color: DesignColors.primaryColor,
-                          size: SizeConfig.blockH! * 5),
+                          size: SizeConfig.blockH! * 7),
                       onPressed: () {},
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: SizeConfig.blockV! * 2),
+              SizedBox(height: SizeConfig.blockV! * 3),
               // Title
               RichText(
                 text: TextSpan(
                   style: TextStyle(
-                    fontSize: SizeConfig.blockH! * 5.5,
+                    fontSize: SizeConfig.blockH! * 9,
                     fontWeight: FontWeight.bold,
                     color: DesignColors.textColor,
                   ),
@@ -103,7 +139,7 @@ class HomeScreen extends StatelessWidget {
                     "Best Destination",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: SizeConfig.blockH! * 4,
+                      fontSize: SizeConfig.blockH! * 5,
                     ),
                   ),
                   TextButton(
@@ -112,20 +148,40 @@ class HomeScreen extends StatelessWidget {
                       "View all",
                       style: TextStyle(
                         color: DesignColors.primaryColor,
-                        fontSize: SizeConfig.blockH! * 3.5,
+                        fontSize: SizeConfig.blockH! * 4,
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: SizeConfig.blockV! * 1),
+              SizedBox(height: SizeConfig.blockV! * 1.8),
               // Horizontal List of Destinations
               SizedBox(
-                height: SizeConfig.blockV! * 28,
+                height: SizeConfig.blockV! * 40,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
                     _DestinationCard(
+                      image: 'images/aa.jpg',
+                      title: 'Niladri Reservoir',
+                      location: 'Tekergat, Sunamgj',
+                      rating: 4.7,
+                      onTap: () {
+                        Navigator.pushNamed(context, '/details');
+                      },
+                    ),
+                    SizedBox(width: SizeConfig.blockH! * 4),
+                     _DestinationCard(
+                      image: 'images/aa.jpg',
+                      title: 'Niladri Reservoir',
+                      location: 'Tekergat, Sunamgj',
+                      rating: 4.7,
+                      onTap: () {
+                        Navigator.pushNamed(context, '/details');
+                      },
+                    ),
+                    SizedBox(width: SizeConfig.blockH! * 4),
+                     _DestinationCard(
                       image: 'images/aa.jpg',
                       title: 'Niladri Reservoir',
                       location: 'Tekergat, Sunamgj',
@@ -171,7 +227,8 @@ class _DestinationCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: SizeConfig.blockH! * 40,
+       // height: 10,//SizeConfig.blockH! * 70,
+        width: SizeConfig.blockH! * 55,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(22),
@@ -179,7 +236,7 @@ class _DestinationCard extends StatelessWidget {
             BoxShadow(
               color: Colors.black12,
               blurRadius: 8,
-              offset: Offset(0, 4),
+              offset: Offset(0, 8),
             ),
           ],
         ),
@@ -191,7 +248,7 @@ class _DestinationCard extends StatelessWidget {
               child: Image.asset(
                 image,
                 width: double.infinity,
-                height: SizeConfig.blockV! * 15,
+                height: SizeConfig.blockV! * 30,
                 fit: BoxFit.cover,
               ),
             ),
@@ -200,19 +257,38 @@ class _DestinationCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: SizeConfig.blockH! * 4,
-                    ),
-                  ),
-                  SizedBox(height: SizeConfig.blockV! * 0.5),
                   Row(
                     children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: SizeConfig.blockH! * 4,
+                        ),
+                      ),
+
+                      SizedBox(width: SizeConfig.blockV! * 8),
+                  
+
+                       Icon(Icons.star,
+                          color: Colors.amber, size: SizeConfig.blockH! * 4),
+                           Text(
+                        rating.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: SizeConfig.blockH! * 4,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: SizeConfig.blockV! * 1.5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      
                       Icon(Icons.location_on,
-                          color: DesignColors.primaryColor, size: 16),
-                      SizedBox(width: 4),
+                          color: DesignColors.primaryColor, size: 14),
+                      //SizedBox(width: 2),
                       Text(
                         location,
                         style: TextStyle(
@@ -220,23 +296,35 @@ class _DestinationCard extends StatelessWidget {
                           fontSize: SizeConfig.blockH! * 3,
                         ),
                       ),
+                      
+                      SizedBox(width: SizeConfig.blockH! * 4),
+                      AvatarStack(
+      avatarImages: [
+        'images/a.jpg',
+        'images/a.jpg',
+        'images/a.jpg',
+      ],
+      extraCount: 50,
+      size: SizeConfig.blockH! * 7,
+    ),
+                     
                     ],
                   ),
-                  SizedBox(height: SizeConfig.blockV! * 0.5),
-                  Row(
-                    children: [
-                      Icon(Icons.star,
-                          color: Colors.amber, size: SizeConfig.blockH! * 3),
-                      SizedBox(width: 4),
-                      Text(
-                        rating.toString(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: SizeConfig.blockH! * 3,
-                        ),
-                      ),
-                    ],
-                  ),
+                  //SizedBox(height: SizeConfig.blockV! * 0.5),
+                  // Row(
+                  //   children: [
+                  //     Icon(Icons.star,
+                  //         color: Colors.amber, size: SizeConfig.blockH! * 3),
+                  //     SizedBox(width: 4),
+                  //     Text(
+                  //       rating.toString(),
+                  //       style: TextStyle(
+                  //         fontWeight: FontWeight.bold,
+                  //         fontSize: SizeConfig.blockH! * 3,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
@@ -247,38 +335,62 @@ class _DestinationCard extends StatelessWidget {
   }
 }
 
-class _BottomNavBar extends StatelessWidget {
-  final int selectedIndex;
-  const _BottomNavBar({required this.selectedIndex});
+
+class AvatarStack extends StatelessWidget {
+  final List<String> avatarImages; // List of asset paths
+  final int extraCount;
+  final double size;
+
+  const AvatarStack({
+    super.key,
+    required this.avatarImages,
+    required this.extraCount,
+    this.size = 28,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: selectedIndex,
-      selectedItemColor: DesignColors.primaryColor,
-      unselectedItemColor: Colors.grey,
-      showUnselectedLabels: true,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
+    List<Widget> avatars = [];
+    for (int i = 0; i < avatarImages.length; i++) {
+      avatars.add(Positioned(
+        left: i * (size * 0.6),
+        child: CircleAvatar(
+          radius: size / 2,
+          backgroundColor: Colors.white,
+          child: CircleAvatar(
+            radius: size / 2 - 2,
+            backgroundImage: AssetImage(avatarImages[i]),
+          ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.calendar_today),
-          label: 'Calendar',
+      ));
+    }
+    // Add the "+N" circle
+    avatars.add(Positioned(
+      left: avatarImages.length * (size * 0.6),
+      child: CircleAvatar(
+        radius: size / 2,
+        backgroundColor: Colors.white,
+        child: CircleAvatar(
+          radius: size / 2 - 2,
+          backgroundColor: Colors.blue[50],
+          child: Text(
+            '+$extraCount',
+            style: TextStyle(
+              fontSize: size * 0.45,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.message),
-          label: 'Messages',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
-      ],
-      onTap: (i) {
-        // Handle navigation if needed
-      },
+      ),
+    ));
+
+    return SizedBox(
+      width: (avatarImages.length + 1) * (size * 0.6) + size * 0.4,
+      height: size,
+      child: Stack(
+        children: avatars,
+      ),
     );
   }
 }

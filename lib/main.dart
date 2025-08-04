@@ -5,6 +5,7 @@ import 'package:musaafir/screens/details.dart';
 import 'package:musaafir/screens/forgotpassword.dart';
 import 'package:musaafir/screens/home.dart';
 import 'package:musaafir/screens/login.dart';
+import 'package:musaafir/screens/mainscreen.dart';
 import 'package:musaafir/screens/signup.dart';
 import 'package:musaafir/screens/view.dart';
 
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
          
         '/details': (context) => const DetailsScreen(),
         '/view': (context) => const ViewScreen(),
+         '/main': (context) => const MainNav(),
       },
     );
   }

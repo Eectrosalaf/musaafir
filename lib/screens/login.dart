@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             // ignore: use_build_context_synchronously
                             context,
-                            '/home');
+                            '/main');
                       } else {
                         showDialog(
                             // ignore: use_build_context_synchronously
