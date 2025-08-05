@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musaafir/screens/home.dart';
+import 'package:musaafir/screens/profile.dart';
 import 'package:musaafir/utils/constants.dart';
 
 
@@ -13,10 +14,10 @@ class MainNav extends StatefulWidget {
 class _MainNavState extends State<MainNav> {
   final List<Widget> screens = [
     HomeScreen(),
-    // Cartscreen(),
-    // Checkoutadresssscreen(),
-    // Tocartscreen(),
-    // ProfileScreen(),
+    HomeScreen(),
+    HomeScreen(),
+    HomeScreen(),
+    ProfileScreen(),
   ];
 
   int currentScreen = 0;

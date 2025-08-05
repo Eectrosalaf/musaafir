@@ -2,10 +2,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:musaafir/screens/details.dart';
+import 'package:musaafir/screens/editprofile.dart';
 import 'package:musaafir/screens/forgotpassword.dart';
 import 'package:musaafir/screens/home.dart';
 import 'package:musaafir/screens/login.dart';
 import 'package:musaafir/screens/mainscreen.dart';
+import 'package:musaafir/screens/profile.dart';
 import 'package:musaafir/screens/signup.dart';
 import 'package:musaafir/screens/view.dart';
 
@@ -38,7 +40,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(), 
         '/signup': (context) => const SignupScreen(),
         '/forgotpassword': (context) => const ForgotPasswordScreen(),
-         
+         '/profile': (context) => const ProfileScreen(),
+         '/editprofile': (context) => const EditProfileScreen(),
         '/details': (context) => const DetailsScreen(),
         '/view': (context) => const ViewScreen(),
          '/main': (context) => const MainNav(),

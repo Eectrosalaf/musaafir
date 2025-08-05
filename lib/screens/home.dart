@@ -44,164 +44,166 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
-      //bottomNavigationBar: _BottomNavBar(selectedIndex: 0),
+      
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.blockH! * 5,
-            vertical: SizeConfig.blockV! * 2,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                    width: SizeConfig.blockV! * 20,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: DesignColors.activeTextColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(SizeConfig.blockH! * 4),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: SizeConfig.blockV! * 0.4,
-                        ),
-                      ),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                           Padding(
-                             padding: const EdgeInsets.only(left: 3,right: 4),
-                             child: CircleAvatar(
-                                                 backgroundColor: Colors.white,
-                                                 radius: SizeConfig.blockH! * 4,
-                                                 child: Icon(Icons.person, color: DesignColors.primaryColor),
-                                               ),
-                           ),
-                          //_socialIcon( Colors.red),
-                          // SizedBox(width: SizeConfig.blockH! * 8),
-                          Text(
-                             isLoading ? "..." : (userName ?? "User"),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: SizeConfig.blockH! * 4,
-                            ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: SizeConfig.blockH! * 5,
+              vertical: SizeConfig.blockV! * 2,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top bar
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+          
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                      width: SizeConfig.blockV! * 20,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: DesignColors.activeTextColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(SizeConfig.blockH! * 4),
                           ),
-                        ],
+                          padding: EdgeInsets.symmetric(
+                            vertical: SizeConfig.blockV! * 0.4,
+                          ),
+                        ),
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                             Padding(
+                               padding: const EdgeInsets.only(left: 3,right: 4),
+                               child: CircleAvatar(
+                                                   backgroundColor: Colors.white,
+                                                   radius: SizeConfig.blockH! * 4,
+                                                   child: Icon(Icons.person, color: DesignColors.primaryColor),
+                                                 ),
+                             ),
+                            //_socialIcon( Colors.red),
+                            // SizedBox(width: SizeConfig.blockH! * 8),
+                            Text(
+                               isLoading ? "..." : (userName ?? "User"),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: SizeConfig.blockH! * 4,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                                      ),
                     ),
-                                    ),
-                  ),
-                 
-                  CircleAvatar(
-                    backgroundColor:DesignColors.backgroundColorInactive, 
-                    radius: SizeConfig.blockV! * 2.5,
-                    child: IconButton(
-                      icon: Icon(Icons.notifications_none,
-                          color: DesignColors.primaryColor,
-                          size: SizeConfig.blockH! * 7),
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: SizeConfig.blockV! * 3),
-              // Title
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    fontSize: SizeConfig.blockH! * 9,
-                    fontWeight: FontWeight.bold,
-                    color: DesignColors.textColor,
-                  ),
-                  children: [
-                    const TextSpan(text: "Explore the\nBeautiful "),
-                    TextSpan(
-                      text: "world!",
-                      style: TextStyle(color: DesignColors.primaryColor),
+                   
+                    CircleAvatar(
+                      backgroundColor:DesignColors.backgroundColorInactive, 
+                      radius: SizeConfig.blockV! * 2.5,
+                      child: IconButton(
+                        icon: Icon(Icons.notifications_none,
+                            color: DesignColors.primaryColor,
+                            size: SizeConfig.blockH! * 7),
+                        onPressed: () {},
+                      ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: SizeConfig.blockV! * 2),
-              // Best Destination Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Best Destination",
+                SizedBox(height: SizeConfig.blockV! * 3),
+                // Title
+                RichText(
+                  text: TextSpan(
                     style: TextStyle(
+                      fontSize: SizeConfig.blockH! * 9,
                       fontWeight: FontWeight.bold,
-                      fontSize: SizeConfig.blockH! * 5,
+                      color: DesignColors.textColor,
                     ),
+                    children: [
+                      const TextSpan(text: "Explore the\nBeautiful "),
+                      TextSpan(
+                        text: "world!",
+                        style: TextStyle(color: DesignColors.primaryColor),
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "View all",
+                ),
+                SizedBox(height: SizeConfig.blockV! * 2.5),
+                // Best Destination Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Best Destination",
                       style: TextStyle(
-                        color: DesignColors.primaryColor,
-                        fontSize: SizeConfig.blockH! * 4,
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeConfig.blockH! * 5,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: SizeConfig.blockV! * 1.8),
-              // Horizontal List of Destinations
-              SizedBox(
-                height: SizeConfig.blockV! * 40,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _DestinationCard(
-                      image: 'images/aa.jpg',
-                      title: 'Niladri Reservoir',
-                      location: 'Tekergat, Sunamgj',
-                      rating: 4.7,
-                      onTap: () {
-                        Navigator.pushNamed(context, '/details');
-                      },
-                    ),
-                    SizedBox(width: SizeConfig.blockH! * 4),
-                     _DestinationCard(
-                      image: 'images/aa.jpg',
-                      title: 'Niladri Reservoir',
-                      location: 'Tekergat, Sunamgj',
-                      rating: 4.7,
-                      onTap: () {
-                        Navigator.pushNamed(context, '/details');
-                      },
-                    ),
-                    SizedBox(width: SizeConfig.blockH! * 4),
-                     _DestinationCard(
-                      image: 'images/aa.jpg',
-                      title: 'Niladri Reservoir',
-                      location: 'Tekergat, Sunamgj',
-                      rating: 4.7,
-                      onTap: () {
-                        Navigator.pushNamed(context, '/details');
-                      },
-                    ),
-                    SizedBox(width: SizeConfig.blockH! * 4),
-                    _DestinationCard(
-                      image: 'images/aaa.jpg',
-                      title: 'Darma Reservoir',
-                      location: 'Tekergat, Sunamgj',
-                      rating: 4.5,
-                      onTap: () {},
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "View all",
+                        style: TextStyle(
+                          color: DesignColors.primaryColor,
+                          fontSize: SizeConfig.blockH! * 4,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                SizedBox(height: SizeConfig.blockV! * 2),
+                // Horizontal List of Destinations
+                SizedBox(
+                  height: SizeConfig.blockV! * 40,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      _DestinationCard(
+                        image: 'images/aa.jpg',
+                        title:  isLoading ? "..." : (userName ?? "User"),
+                        location: 'Tekergat, Sunamgj',
+                        rating: 4.7,
+                        onTap: () {
+                          Navigator.pushNamed(context, '/details');
+                        },
+                      ),
+                      SizedBox(width: SizeConfig.blockH! * 4),
+                       _DestinationCard(
+                        image: 'images/aa.jpg',
+                        title: 'Niladri Reservoir',
+                        location: 'Tekergat, Sunamgj',
+                        rating: 4.7,
+                        onTap: () {
+                          Navigator.pushNamed(context, '/details');
+                        },
+                      ),
+                      SizedBox(width: SizeConfig.blockH! * 4),
+                       _DestinationCard(
+                        image: 'images/aa.jpg',
+                        title: 'Niladri Reservoir',
+                        location: 'Tekergat, Sunamgj',
+                        rating: 4.7,
+                        onTap: () {
+                          Navigator.pushNamed(context, '/details');
+                        },
+                      ),
+                      SizedBox(width: SizeConfig.blockH! * 4),
+                      _DestinationCard(
+                        image: 'images/aaa.jpg',
+                        title: 'Darma Reservoir',
+                        location: 'Tekergat, Sunamgj',
+                        rating: 4.5,
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -258,6 +260,7 @@ class _DestinationCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         title,
@@ -310,21 +313,7 @@ class _DestinationCard extends StatelessWidget {
                      
                     ],
                   ),
-                  //SizedBox(height: SizeConfig.blockV! * 0.5),
-                  // Row(
-                  //   children: [
-                  //     Icon(Icons.star,
-                  //         color: Colors.amber, size: SizeConfig.blockH! * 3),
-                  //     SizedBox(width: 4),
-                  //     Text(
-                  //       rating.toString(),
-                  //       style: TextStyle(
-                  //         fontWeight: FontWeight.bold,
-                  //         fontSize: SizeConfig.blockH! * 3,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+             
                 ],
               ),
             ),
