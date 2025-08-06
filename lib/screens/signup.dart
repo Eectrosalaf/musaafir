@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:musaafir/services/auth.dart';
+import 'package:musaafir/services/google_auth.dart';
 import 'package:musaafir/widgets/alert.dart';
 import '../utils/constants.dart';
 import '../utils/screensize.dart';
@@ -39,7 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     backgroundColor: Colors.grey[200],
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                      onPressed:() =>  Navigator.pushNamed(context, '/login'),
+                      onPressed: () => Navigator.pushNamed(context, '/login'),
                       //() => Navigator.of(context).pop(),
                     ),
                   ),
@@ -140,7 +143,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         email: emailController.text,
                         password: passwordController.text,
                       );
-                     
+
                       if (output == 'success') {
                         showDialog(
                           // ignore: use_build_context_synchronously
@@ -157,7 +160,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                 btntitle: 'Go to Log in',
                                 details:
                                     'You have successfully Registered your account.',
-                                
                               ),
                             );
                           },
@@ -177,18 +179,15 @@ class _SignupScreenState extends State<SignupScreen> {
                                 title: 'Opps!',
                                 btntitle: 'Sign Up Again',
                                 details: output,
-
-                                
                               ),
                             );
                           },
                         );
 
-                         nameController.clear();
-                      emailController.clear();
+                        nameController.clear();
+                        emailController.clear();
 
-                      passwordController.clear();
-
+                        passwordController.clear();
                       }
                     },
                     child: Text(
@@ -240,11 +239,32 @@ class _SignupScreenState extends State<SignupScreen> {
                         vertical: SizeConfig.blockV! * 1,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      String output = await GoogleSignInService()
+                          .signInWithGoogle();
+                      if (output == 'success') {
+                        Navigator.pushReplacementNamed(context, '/main');
+                      } else {
+                        showDialog(
+                          // ignore: use_build_context_synchronously
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Google Sign-In Failed'),
+                            content: Text(output),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _socialIcon( Colors.red),
+                        _socialIcon(Colors.red),
                         // SizedBox(width: SizeConfig.blockH! * 8),
                         Text(
                           "Continue with Google",
@@ -275,16 +295,16 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
- Widget _socialIcon( Color color) {
+  Widget _socialIcon(Color color) {
     return CircleAvatar(
       backgroundColor: color.withOpacity(0.1),
       radius: SizeConfig.blockH! * 5,
-      child:Image.asset(
+      child: Image.asset(
         'images/aaaa.webp',
         height: SizeConfig.blockH! * 7,
         width: SizeConfig.blockH! * 7,
       ),
-      
+
       //Icon(icon, color: color, size: SizeConfig.blockH! * 8),
     );
   }

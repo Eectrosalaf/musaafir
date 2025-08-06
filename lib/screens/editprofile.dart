@@ -179,8 +179,7 @@ class _EditField extends StatelessWidget {
     required this.label,
     required this.initialValue,
     required this.onSaved,
-    this.keyboardType,
-    this.prefix,
+    this.keyboardType, this.prefix,
   });
 
   @override

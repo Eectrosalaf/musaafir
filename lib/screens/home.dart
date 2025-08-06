@@ -12,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   String? userName;
   bool isLoading = true;
   @override
@@ -20,11 +19,15 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     fetchUserName();
   }
-   Future<void> fetchUserName() async {
+
+  Future<void> fetchUserName() async {
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid != null) {
-        final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        final doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .get();
         setState(() {
           userName = doc.data()?['name'] ?? 'User';
           isLoading = false;
@@ -44,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
-      
+
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -59,55 +62,63 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-          
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(4.0),
                       child: SizedBox(
-                      width: SizeConfig.blockV! * 20,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: DesignColors.activeTextColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(SizeConfig.blockH! * 4),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: SizeConfig.blockV! * 0.4,
-                          ),
-                        ),
-                        onPressed: () {},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                             Padding(
-                               padding: const EdgeInsets.only(left: 3,right: 4),
-                               child: CircleAvatar(
-                                                   backgroundColor: Colors.white,
-                                                   radius: SizeConfig.blockH! * 4,
-                                                   child: Icon(Icons.person, color: DesignColors.primaryColor),
-                                                 ),
-                             ),
-                            //_socialIcon( Colors.red),
-                            // SizedBox(width: SizeConfig.blockH! * 8),
-                            Text(
-                               isLoading ? "..." : (userName ?? "User"),
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: SizeConfig.blockH! * 4,
+                        width: SizeConfig.blockV! * 20,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: DesignColors.activeTextColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                SizeConfig.blockH! * 4,
                               ),
                             ),
-                          ],
+                            padding: EdgeInsets.symmetric(
+                              vertical: SizeConfig.blockV! * 0.4,
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 3,
+                                  right: 4,
+                                ),
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: SizeConfig.blockH! * 4,
+                                  child: Icon(
+                                    Icons.person,
+                                    color: DesignColors.primaryColor,
+                                  ),
+                                ),
+                              ),
+
+                              Text(
+                                isLoading ? "..." : (userName ?? "User"),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: SizeConfig.blockH! * 3.2,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                                      ),
                     ),
-                   
+
                     CircleAvatar(
-                      backgroundColor:DesignColors.backgroundColorInactive, 
+                      backgroundColor: DesignColors.backgroundColorInactive,
                       radius: SizeConfig.blockV! * 2.5,
                       child: IconButton(
-                        icon: Icon(Icons.notifications_none,
-                            color: DesignColors.primaryColor,
-                            size: SizeConfig.blockH! * 7),
+                        icon: Icon(
+                          Icons.notifications_none,
+                          color: DesignColors.primaryColor,
+                          size: SizeConfig.blockH! * 7,
+                        ),
                         onPressed: () {},
                       ),
                     ),
@@ -164,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       _DestinationCard(
                         image: 'images/aa.jpg',
-                        title:  isLoading ? "..." : (userName ?? "User"),
+                        title: isLoading ? "..." : (userName ?? "User"),
                         location: 'Tekergat, Sunamgj',
                         rating: 4.7,
                         onTap: () {
@@ -172,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                       SizedBox(width: SizeConfig.blockH! * 4),
-                       _DestinationCard(
+                      _DestinationCard(
                         image: 'images/aa.jpg',
                         title: 'Niladri Reservoir',
                         location: 'Tekergat, Sunamgj',
@@ -182,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                       SizedBox(width: SizeConfig.blockH! * 4),
-                       _DestinationCard(
+                      _DestinationCard(
                         image: 'images/aa.jpg',
                         title: 'Niladri Reservoir',
                         location: 'Tekergat, Sunamgj',
@@ -229,7 +240,7 @@ class _DestinationCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-       // height: 10,//SizeConfig.blockH! * 70,
+        // height: 10,//SizeConfig.blockH! * 70,
         width: SizeConfig.blockH! * 55,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -270,12 +281,14 @@ class _DestinationCard extends StatelessWidget {
                         ),
                       ),
 
-                      SizedBox(width: SizeConfig.blockV! * 8),
-                  
+                      SizedBox(width: SizeConfig.blockV! * 5),
 
-                       Icon(Icons.star,
-                          color: Colors.amber, size: SizeConfig.blockH! * 4),
-                           Text(
+                      Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: SizeConfig.blockH! * 4,
+                      ),
+                      Text(
                         rating.toString(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -288,9 +301,11 @@ class _DestinationCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      
-                      Icon(Icons.location_on,
-                          color: DesignColors.primaryColor, size: 14),
+                      Icon(
+                        Icons.location_on,
+                        color: DesignColors.primaryColor,
+                        size: 14,
+                      ),
                       //SizedBox(width: 2),
                       Text(
                         location,
@@ -299,21 +314,19 @@ class _DestinationCard extends StatelessWidget {
                           fontSize: SizeConfig.blockH! * 3,
                         ),
                       ),
-                      
+
                       SizedBox(width: SizeConfig.blockH! * 4),
                       AvatarStack(
-      avatarImages: [
-        'images/a.jpg',
-        'images/a.jpg',
-        'images/a.jpg',
-      ],
-      extraCount: 50,
-      size: SizeConfig.blockH! * 7,
-    ),
-                     
+                        avatarImages: [
+                          'images/a.jpg',
+                          'images/a.jpg',
+                          'images/a.jpg',
+                        ],
+                        extraCount: 50,
+                        size: SizeConfig.blockH! * 7,
+                      ),
                     ],
                   ),
-             
                 ],
               ),
             ),
@@ -323,7 +336,6 @@ class _DestinationCard extends StatelessWidget {
     );
   }
 }
-
 
 class AvatarStack extends StatelessWidget {
   final List<String> avatarImages; // List of asset paths
@@ -341,45 +353,47 @@ class AvatarStack extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> avatars = [];
     for (int i = 0; i < avatarImages.length; i++) {
-      avatars.add(Positioned(
-        left: i * (size * 0.6),
+      avatars.add(
+        Positioned(
+          left: i * (size * 0.6),
+          child: CircleAvatar(
+            radius: size / 2,
+            backgroundColor: Colors.white,
+            child: CircleAvatar(
+              radius: size / 2 - 2,
+              backgroundImage: AssetImage(avatarImages[i]),
+            ),
+          ),
+        ),
+      );
+    }
+    // Add the "+N" circle
+    avatars.add(
+      Positioned(
+        left: avatarImages.length * (size * 0.6),
         child: CircleAvatar(
           radius: size / 2,
           backgroundColor: Colors.white,
           child: CircleAvatar(
             radius: size / 2 - 2,
-            backgroundImage: AssetImage(avatarImages[i]),
-          ),
-        ),
-      ));
-    }
-    // Add the "+N" circle
-    avatars.add(Positioned(
-      left: avatarImages.length * (size * 0.6),
-      child: CircleAvatar(
-        radius: size / 2,
-        backgroundColor: Colors.white,
-        child: CircleAvatar(
-          radius: size / 2 - 2,
-          backgroundColor: Colors.blue[50],
-          child: Text(
-            '+$extraCount',
-            style: TextStyle(
-              fontSize: size * 0.45,
-              color: Colors.blue,
-              fontWeight: FontWeight.bold,
+            backgroundColor: Colors.blue[50],
+            child: Text(
+              '+$extraCount',
+              style: TextStyle(
+                fontSize: size * 0.45,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
       ),
-    ));
+    );
 
     return SizedBox(
       width: (avatarImages.length + 1) * (size * 0.6) + size * 0.4,
       height: size,
-      child: Stack(
-        children: avatars,
-      ),
+      child: Stack(children: avatars),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:musaafir/screens/home.dart';
 import 'package:musaafir/screens/profile.dart';
 import 'package:musaafir/utils/constants.dart';
 
-
 class MainNav extends StatefulWidget {
   const MainNav({super.key});
 
@@ -21,7 +20,7 @@ class _MainNavState extends State<MainNav> {
   ];
 
   int currentScreen = 0;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

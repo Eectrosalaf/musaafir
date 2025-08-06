@@ -114,7 +114,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           context: context,
                           builder: (context) {
                             return AnimatedContainer(
-                              duration: const Duration(seconds: 10),
+                              duration: const Duration(seconds: 9),
                               curve: Curves.linearToEaseOut,
                               child: Notifyalert(
                                 onpressed: () {

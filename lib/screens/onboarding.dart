@@ -43,7 +43,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _onNext() {
     if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(
-          duration: const Duration(milliseconds: 400), curve: Curves.ease);
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.ease,
+      );
     } else {
       Navigator.of(context).pushReplacementNamed('/login');
     }
@@ -77,7 +79,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       child: Image.asset(
                         data.image,
                         width: SizeConfig.screenW,
-                        height: imageHeight*1.1,
+                        height: imageHeight * 1.1,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -86,8 +88,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         top: SizeConfig.blockV! * 2,
                         right: SizeConfig.blockH! * 4,
                         child: TextButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushReplacementNamed('/login'),
+                          onPressed: () => Navigator.of(
+                            context,
+                          ).pushReplacementNamed('/login'),
                           child: const Text('Skip'),
                         ),
                       ),
@@ -96,7 +99,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                        horizontal: SizeConfig.blockH! * 7, vertical: 0),
+                      horizontal: SizeConfig.blockH! * 7,
+                      vertical: 0,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -137,7 +142,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             (index) => AnimatedContainer(
                               duration: const Duration(milliseconds: 300),
                               margin: EdgeInsets.symmetric(
-                                  horizontal: SizeConfig.blockH! * 0.5),
+                                horizontal: SizeConfig.blockH! * 0.5,
+                              ),
                               width: _currentPage == index
                                   ? SizeConfig.blockH! * 8
                                   : SizeConfig.blockH! * 3,
@@ -162,7 +168,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               padding: EdgeInsets.symmetric(
-                                  vertical: SizeConfig.blockV! * 2),
+                                vertical: SizeConfig.blockV! * 2,
+                              ),
                             ),
                             onPressed: _onNext,
                             child: Text(

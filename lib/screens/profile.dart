@@ -26,7 +26,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid != null) {
-        final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        final doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .get();
         setState(() {
           userName = doc.data()?['name'] ?? 'User';
           userEmail = doc.data()?['email'] ?? '';
@@ -67,7 +70,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         backgroundColor: Colors.white,
                         child: IconButton(
                           icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                          onPressed: () =>  Navigator.pushNamed(context, '/home'),
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/home'),
                         ),
                       ),
                       Text(
@@ -94,7 +98,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 CircleAvatar(
                   radius: SizeConfig.blockH! * 12,
                   backgroundColor: Colors.pink[100],
-                  child: Icon(Icons.person, size: SizeConfig.blockH! * 10, color: Colors.blueGrey),
+                  child: Icon(
+                    Icons.person,
+                    size: SizeConfig.blockH! * 10,
+                    color: Colors.blueGrey,
+                  ),
                 ),
                 SizedBox(height: SizeConfig.blockV! * 2),
                 Text(
@@ -126,19 +134,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _StatColumn(label: "Reward Points", value: "360", color: Colors.orange),
+                      _StatColumn(
+                        label: "Reward Points",
+                        value: "360",
+                        color: Colors.orange,
+                      ),
                       Container(
                         width: 1,
                         height: SizeConfig.blockV! * 4,
                         color: Colors.grey[300],
                       ),
-                      _StatColumn(label: "Travel Trips", value: "238", color: Colors.orange),
+                      _StatColumn(
+                        label: "Travel Trips",
+                        value: "238",
+                        color: Colors.orange,
+                      ),
                       Container(
                         width: 1,
                         height: SizeConfig.blockV! * 4,
                         color: Colors.grey[300],
                       ),
-                      _StatColumn(label: "Bucket List", value: "473", color: Colors.orange),
+                      _StatColumn(
+                        label: "Bucket List",
+                        value: "473",
+                        color: Colors.orange,
+                      ),
                     ],
                   ),
                 ),
@@ -151,11 +171,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   child: Column(
                     children: [
-                      _ProfileMenuItem(icon: Icons.person, label: "Profile", onTap: () {}),
-                      _ProfileMenuItem(icon: Icons.bookmark, label: "Bookmarked", onTap: () {}),
-                      _ProfileMenuItem(icon: Icons.history, label: "Previous Trips", onTap: () {}),
-                      _ProfileMenuItem(icon: Icons.settings, label: "Settings", onTap: () {}),
-                      _ProfileMenuItem(icon: Icons.info_outline, label: "Version", onTap: () {}),
+                      _ProfileMenuItem(
+                        icon: Icons.person,
+                        label: "Profile",
+                        onTap: () {},
+                      ),
+                      _ProfileMenuItem(
+                        icon: Icons.bookmark,
+                        label: "Bookmarked",
+                        onTap: () {},
+                      ),
+                      _ProfileMenuItem(
+                        icon: Icons.history,
+                        label: "Previous Trips",
+                        onTap: () {},
+                      ),
+                      _ProfileMenuItem(
+                        icon: Icons.settings,
+                        label: "Settings",
+                        onTap: () {},
+                      ),
+                      _ProfileMenuItem(
+                        icon: Icons.info_outline,
+                        label: "Version",
+                        onTap: () {},
+                      ),
                     ],
                   ),
                 ),
@@ -173,7 +213,11 @@ class _StatColumn extends StatelessWidget {
   final String label;
   final String value;
   final Color color;
-  const _StatColumn({required this.label, required this.value, required this.color});
+  const _StatColumn({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +248,11 @@ class _ProfileMenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _ProfileMenuItem({required this.icon, required this.label, required this.onTap});
+  const _ProfileMenuItem({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

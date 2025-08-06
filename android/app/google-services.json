@@ -12,7 +12,12 @@
           "package_name": "musaafir_1.v1"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "282853021294-56khfp87jpueerfbk05niurstv99nu02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDAgJaXTHA7OAZbp36H89WGApG0pNabDo8"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "282853021294-56khfp87jpueerfbk05niurstv99nu02.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

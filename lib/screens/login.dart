@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:musaafir/services/auth.dart';
+import 'package:musaafir/services/google_auth.dart';
 import 'package:musaafir/widgets/alert.dart';
 import '../utils/constants.dart';
 import '../utils/screensize.dart';
@@ -13,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscure = true;
-   TextEditingController emailController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   AuthenticationMethods authenticationMethods = AuthenticationMethods();
 
@@ -26,20 +29,21 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: SizeConfig.blockH! * 7,
-                vertical: SizeConfig.blockV! * 4),
+              horizontal: SizeConfig.blockH! * 7,
+              vertical: SizeConfig.blockV! * 4,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Align(
-                   alignment: Alignment.centerLeft,
+                  alignment: Alignment.centerLeft,
                   child: CircleAvatar(
-                    backgroundColor: Colors.grey[200], 
+                    backgroundColor: Colors.grey[200],
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                       onPressed: () {
-                                  Navigator.pushNamed(context, '/signup');
-                                },
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
                     ),
                   ),
                 ),
@@ -115,9 +119,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       padding: EdgeInsets.symmetric(
-                          vertical: SizeConfig.blockV! * 1.5),
+                        vertical: SizeConfig.blockV! * 1.5,
+                      ),
                     ),
-                      onPressed: () async {
+                    onPressed: () async {
                       String output = await authenticationMethods.signInUser(
                         email: emailController.text,
                         password: passwordController.text,
@@ -129,31 +134,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       if (output == 'success') {
                         Navigator.pushNamed(
-
-                            // ignore: use_build_context_synchronously
-                            context,
-                            '/main');
+                          // ignore: use_build_context_synchronously
+                          context,
+                          '/main',
+                        );
                       } else {
                         showDialog(
-                            // ignore: use_build_context_synchronously
-                            context: context,
-                            builder: (context) {
-                              return AnimatedContainer(
-                                duration: const Duration(seconds: 10),
-                                curve: Curves.linearToEaseOut,
-                                child: Notifyalert(
-                                    onpressed: () {
-                                      Navigator.pushNamed(
-                                          context, '/login');
-                                    },
-                                    title: 'Opps!',
-                                    btntitle: 'Log in Again',
-                                    details: output
-
-                            
-                                    ),
-                              );
-                            });
+                          // ignore: use_build_context_synchronously
+                          context: context,
+                          builder: (context) {
+                            return AnimatedContainer(
+                              duration: const Duration(seconds: 10),
+                              curve: Curves.linearToEaseOut,
+                              child: Notifyalert(
+                                onpressed: () {
+                                  Navigator.pushNamed(context, '/login');
+                                },
+                                title: 'Opps!',
+                                btntitle: 'Log in Again',
+                                details: output,
+                              ),
+                            );
+                          },
+                        );
                       }
                     },
                     child: Text(
@@ -169,10 +172,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Don't have an account? ",
-                        style: TextStyle(
-                            fontSize: SizeConfig.blockH! * 3.5,
-                            color: Colors.black54)),
+                    Text(
+                      "Don't have an account? ",
+                      style: TextStyle(
+                        fontSize: SizeConfig.blockH! * 3.5,
+                        color: Colors.black54,
+                      ),
+                    ),
                     GestureDetector(
                       onTap: () => Navigator.pushNamed(context, '/signup'),
                       child: Text(
@@ -187,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 SizedBox(height: SizeConfig.blockV! * 2),
-                
+
                 SizedBox(height: SizeConfig.blockV! * 8),
                 SizedBox(
                   width: double.infinity,
@@ -201,12 +207,32 @@ class _LoginScreenState extends State<LoginScreen> {
                         vertical: SizeConfig.blockV! * 1,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      String output = await GoogleSignInService()
+                          .signInWithGoogle();
+                      if (output == 'success') {
+                        Navigator.pushReplacementNamed(context, '/main');
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Google Sign-In Failed'),
+                            content: Text(output),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _socialIcon( Colors.blue),
-                       // SizedBox(width: SizeConfig.blockH! * 8),
+                        _socialIcon(Colors.blue),
+
                         Text(
                           "Continue with Google",
                           style: TextStyle(
@@ -226,16 +252,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _socialIcon( Color color) {
+  Widget _socialIcon(Color color) {
     return CircleAvatar(
       backgroundColor: color.withOpacity(0.1),
       radius: SizeConfig.blockH! * 5,
-      child:Image.asset(
+      child: Image.asset(
         'images/aaaa.webp',
         height: SizeConfig.blockH! * 7,
         width: SizeConfig.blockH! * 7,
       ),
-      
+
       //Icon(icon, color: color, size: SizeConfig.blockH! * 8),
     );
   }

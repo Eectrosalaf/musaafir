@@ -39,6 +39,7 @@ dependencies:
   cloud_firestore: 
   google_fonts:
   firebase_storage: 
+  google_sign_in: ^6.1.5
 
 dev_dependencies:
   flutter_test:
