@@ -1,6 +1,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:musaafir/screens/calendar.dart';
 import 'package:musaafir/screens/details.dart';
 import 'package:musaafir/screens/editprofile.dart';
 import 'package:musaafir/screens/forgotpassword.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         '/details': (context) => const DetailsScreen(),
         '/view': (context) => const ViewScreen(),
          '/main': (context) => const MainNav(),
+         '/calendar': (context) => const CalendarScreen(),
       },
     );
   }
