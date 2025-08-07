@@ -1,53 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_provider.dart';
 import '../utils/constants.dart';
 import '../utils/screensize.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
-
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String? userName;
-  String? userEmail;
-  bool isLoading = true;
-
   @override
   void initState() {
     super.initState();
-    fetchUserData();
-  }
-
-  Future<void> fetchUserData() async {
-    try {
-      final uid = FirebaseAuth.instance.currentUser?.uid;
-      if (uid != null) {
-        final doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(uid)
-            .get();
-        setState(() {
-          userName = doc.data()?['name'] ?? 'User';
-          userEmail = doc.data()?['email'] ?? '';
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        userName = 'User';
-        userEmail = '';
-        isLoading = false;
-      });
-    }
+    Future.microtask(
+      () => Provider.of<UserProvider>(context, listen: false).fetchUserData(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
@@ -61,42 +36,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               children: [
                 // Top bar
-                Padding(
-                  padding: const EdgeInsets.only(top: 35),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                          onPressed: () =>
-                              Navigator.pushNamed(context, '/home'),
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        onPressed: () => Navigator.of(context).maybePop(),
                       ),
-                      Text(
-                        "Profile",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: SizeConfig.blockH! * 5,
-                        ),
+                    ),
+                    Text(
+                      "Profile",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeConfig.blockH! * 5,
                       ),
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/editprofile');
-                          },
-                        ),
+                    ),
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/editprofile');
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: SizeConfig.blockV! * 2),
                 // Avatar and name/email
                 CircleAvatar(
-                  radius: SizeConfig.blockH! * 12,
+                  radius: SizeConfig.blockH! * 8,
                   backgroundColor: Colors.pink[100],
                   child: Icon(
                     Icons.person,
@@ -106,7 +77,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: SizeConfig.blockV! * 2),
                 Text(
-                  isLoading ? "..." : (userName ?? "User"),
+                  userProvider.isLoading
+                      ? "..."
+                      : (userProvider.userName ?? "User"),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: SizeConfig.blockH! * 5,
@@ -114,7 +87,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: SizeConfig.blockV! * 1),
                 Text(
-                  isLoading ? "..." : (userEmail ?? ""),
+                  userProvider.isLoading
+                      ? "..."
+                      : (userProvider.userEmail ?? ""),
                   style: TextStyle(
                     color: Colors.black54,
                     fontSize: SizeConfig.blockH! * 3.5,

@@ -1,55 +1,33 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_provider.dart';
 import '../utils/constants.dart';
 import '../utils/screensize.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? userName;
-  bool isLoading = true;
   @override
   void initState() {
     super.initState();
-    fetchUserName();
-  }
-
-  Future<void> fetchUserName() async {
-    try {
-      final uid = FirebaseAuth.instance.currentUser?.uid;
-      if (uid != null) {
-        final doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(uid)
-            .get();
-        setState(() {
-          userName = doc.data()?['name'] ?? 'User';
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        userName = 'User';
-        isLoading = false;
-      });
-    }
+    Future.microtask(() =>
+      Provider.of<UserProvider>(context, listen: false).fetchUserData()
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
-
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: SizeConfig.blockH! * 5,
@@ -70,9 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: DesignColors.activeTextColor,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                SizeConfig.blockH! * 4,
-                              ),
+                              borderRadius: BorderRadius.circular(SizeConfig.blockH! * 4),
                             ),
                             padding: EdgeInsets.symmetric(
                               vertical: SizeConfig.blockV! * 0.4,
@@ -83,22 +59,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 3,
-                                  right: 4,
-                                ),
+                                padding: const EdgeInsets.only(left: 3, right: 4),
                                 child: CircleAvatar(
                                   backgroundColor: Colors.white,
                                   radius: SizeConfig.blockH! * 4,
-                                  child: Icon(
-                                    Icons.person,
-                                    color: DesignColors.primaryColor,
-                                  ),
+                                  child: Icon(Icons.person, color: DesignColors.primaryColor),
                                 ),
                               ),
-
                               Text(
-                                isLoading ? "..." : (userName ?? "User"),
+                                userProvider.isLoading ? "..." : (userProvider.userName ?? "User"),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: SizeConfig.blockH! * 3.2,
@@ -109,16 +78,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-
                     CircleAvatar(
                       backgroundColor: DesignColors.backgroundColorInactive,
                       radius: SizeConfig.blockV! * 2.5,
                       child: IconButton(
-                        icon: Icon(
-                          Icons.notifications_none,
-                          color: DesignColors.primaryColor,
-                          size: SizeConfig.blockH! * 7,
-                        ),
+                        icon: Icon(Icons.notifications_none,
+                            color: DesignColors.primaryColor,
+                            size: SizeConfig.blockH! * 7),
                         onPressed: () {},
                       ),
                     ),
@@ -126,99 +92,99 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(height: SizeConfig.blockV! * 3),
                 // Title
-                RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      fontSize: SizeConfig.blockH! * 9,
-                      fontWeight: FontWeight.bold,
-                      color: DesignColors.textColor,
-                    ),
-                    children: [
-                      const TextSpan(text: "Explore the\nBeautiful "),
-                      TextSpan(
-                        text: "world!",
-                        style: TextStyle(color: DesignColors.primaryColor),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: SizeConfig.blockV! * 2.5),
-                // Best Destination Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Best Destination",
+                  RichText(
+                    text: TextSpan(
                       style: TextStyle(
+                        fontSize: SizeConfig.blockH! * 9,
                         fontWeight: FontWeight.bold,
-                        fontSize: SizeConfig.blockH! * 5,
+                        color: DesignColors.textColor,
                       ),
+                      children: [
+                        const TextSpan(text: "Explore the\nBeautiful "),
+                        TextSpan(
+                          text: "world!",
+                          style: TextStyle(color: DesignColors.primaryColor),
+                        ),
+                      ],
                     ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "View all",
+                  ),
+                  SizedBox(height: SizeConfig.blockV! * 2.5),
+                  // Best Destination Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Best Destination",
                         style: TextStyle(
-                          color: DesignColors.primaryColor,
-                          fontSize: SizeConfig.blockH! * 4,
+                          fontWeight: FontWeight.bold,
+                          fontSize: SizeConfig.blockH! * 5,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: SizeConfig.blockV! * 2),
-                // Horizontal List of Destinations
-                SizedBox(
-                  height: SizeConfig.blockV! * 40,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      _DestinationCard(
-                        image: 'images/aa.jpg',
-                        title: isLoading ? "..." : (userName ?? "User"),
-                        location: 'Tekergat, Sunamgj',
-                        rating: 4.7,
-                        onTap: () {
-                          Navigator.pushNamed(context, '/details');
-                        },
-                      ),
-                      SizedBox(width: SizeConfig.blockH! * 4),
-                      _DestinationCard(
-                        image: 'images/aa.jpg',
-                        title: 'Niladri Reservoir',
-                        location: 'Tekergat, Sunamgj',
-                        rating: 4.7,
-                        onTap: () {
-                          Navigator.pushNamed(context, '/details');
-                        },
-                      ),
-                      SizedBox(width: SizeConfig.blockH! * 4),
-                      _DestinationCard(
-                        image: 'images/aa.jpg',
-                        title: 'Niladri Reservoir',
-                        location: 'Tekergat, Sunamgj',
-                        rating: 4.7,
-                        onTap: () {
-                          Navigator.pushNamed(context, '/details');
-                        },
-                      ),
-                      SizedBox(width: SizeConfig.blockH! * 4),
-                      _DestinationCard(
-                        image: 'images/aaa.jpg',
-                        title: 'Darma Reservoir',
-                        location: 'Tekergat, Sunamgj',
-                        rating: 4.5,
-                        onTap: () {},
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "View all",
+                          style: TextStyle(
+                            color: DesignColors.primaryColor,
+                            fontSize: SizeConfig.blockH! * 4,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  SizedBox(height: SizeConfig.blockV! * 2),
+                  // Horizontal List of Destinations
+                  SizedBox(
+                    height: SizeConfig.blockV! * 40,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        _DestinationCard(
+                          image: 'images/aa.jpg',
+                          title: userProvider.isLoading ? "..." : (userProvider.userName ?? "User"),
+                          location: 'Tekergat, Sunamgj',
+                          rating: 4.7,
+                          onTap: () {
+                            Navigator.pushNamed(context, '/details');
+                          },
+                        ),
+                        SizedBox(width: SizeConfig.blockH! * 4),
+                        _DestinationCard(
+                          image: 'images/aa.jpg',
+                          title: 'Niladri Reservoir',
+                          location: 'Tekergat, Sunamgj',
+                          rating: 4.7,
+                          onTap: () {
+                            Navigator.pushNamed(context, '/details');
+                          },
+                        ),
+                        SizedBox(width: SizeConfig.blockH! * 4),
+                        _DestinationCard(
+                          image: 'images/aa.jpg',
+                          title: 'Niladri Reservoir',
+                          location: 'Tekergat, Sunamgj',
+                          rating: 4.7,
+                          onTap: () {
+                            Navigator.pushNamed(context, '/details');
+                          },
+                        ),
+                        SizedBox(width: SizeConfig.blockH! * 4),
+                        _DestinationCard(
+                          image: 'images/aaa.jpg',
+                          title: 'Darma Reservoir',
+                          location: 'Tekergat, Sunamgj',
+                          rating: 4.5,
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
       ),
-    );
+      );
   }
 }
 

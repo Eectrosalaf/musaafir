@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../providers/calendar_provider.dart';
 import '../utils/constants.dart';
 import '../utils/screensize.dart';
 
-class CalendarScreen extends StatefulWidget {
+class CalendarScreen extends StatelessWidget {
   const CalendarScreen({super.key});
 
-  @override
-  State<CalendarScreen> createState() => _CalendarScreenState();
-}
-
-class _CalendarScreenState extends State<CalendarScreen> {
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  String _monthName(DateTime date) {
+    const months = [
+      '',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    return months[date.month];
+  }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final calendarProvider = Provider.of<CalendarProvider>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
@@ -70,13 +84,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         IconButton(
                           icon: const Icon(Icons.chevron_left),
                           onPressed: () {
-                            setState(() {
-                              _focusedDay = _focusedDay.subtract(const Duration(days: 7));
-                            });
+                            calendarProvider.setFocusedDay(
+                              calendarProvider.focusedDay.subtract(
+                                const Duration(days: 7),
+                              ),
+                            );
                           },
                         ),
                         Text(
-                          "${_selectedDay?.day ?? _focusedDay.day} ${_monthName(_selectedDay ?? _focusedDay)}",
+                          "${calendarProvider.selectedDay?.day ?? calendarProvider.focusedDay.day} ${_monthName(calendarProvider.selectedDay ?? calendarProvider.focusedDay)}",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: SizeConfig.blockH! * 4.2,
@@ -85,9 +101,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         IconButton(
                           icon: const Icon(Icons.chevron_right),
                           onPressed: () {
-                            setState(() {
-                              _focusedDay = _focusedDay.add(const Duration(days: 7));
-                            });
+                            calendarProvider.setFocusedDay(
+                              calendarProvider.focusedDay.add(
+                                const Duration(days: 7),
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -95,15 +113,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     TableCalendar(
                       firstDay: DateTime.utc(2020, 1, 1),
                       lastDay: DateTime.utc(2030, 12, 31),
-                      focusedDay: _focusedDay,
+                      focusedDay: calendarProvider.focusedDay,
                       selectedDayPredicate: (day) {
-                        return isSameDay(_selectedDay, day);
+                        return isSameDay(calendarProvider.selectedDay, day);
                       },
                       onDaySelected: (selectedDay, focusedDay) {
-                        setState(() {
-                          _selectedDay = selectedDay;
-                          _focusedDay = focusedDay;
-                        });
+                        calendarProvider.setSelectedDay(selectedDay);
                       },
                       calendarFormat: CalendarFormat.week,
                       headerVisible: false,
@@ -119,7 +134,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           borderRadius: BorderRadius.circular(12),
                           shape: BoxShape.rectangle,
                         ),
-                        selectedTextStyle: const TextStyle(color: Colors.black),
+                        selectedTextStyle: const TextStyle(color: Colors.white),
                         defaultTextStyle: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: SizeConfig.blockH! * 3.5,
@@ -198,14 +213,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
     );
   }
-
-  String _monthName(DateTime date) {
-    const months = [
-      '', 'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    return months[date.month];
-  }
 }
 
 class _ScheduleCard extends StatelessWidget {
@@ -282,11 +289,11 @@ class _ScheduleCard extends StatelessWidget {
                 ),
               ],
             ),
-              const Spacer(),
-              const Icon(Icons.arrow_forward_ios, size: 18),
-            ],
-          ),
+            const Spacer(),
+            const Icon(Icons.arrow_forward_ios, size: 18),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
+}
