@@ -300,9 +300,9 @@ class _SignupScreenState extends State<SignupScreen> {
       backgroundColor: color.withOpacity(0.1),
       radius: SizeConfig.blockH! * 5,
       child: Image.asset(
-        'images/aaaa.webp',
-        height: SizeConfig.blockH! * 7,
-        width: SizeConfig.blockH! * 7,
+        'images/ab.webp',
+        height: SizeConfig.blockV! * 20,
+        width: SizeConfig.blockV! * 20,
       ),
 
       //Icon(icon, color: color, size: SizeConfig.blockH! * 8),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:musaafir/screens/calendar.dart';
 import 'package:musaafir/screens/home.dart';
+import 'package:musaafir/screens/messagelist.dart';
 import 'package:musaafir/screens/profile.dart';
 import 'package:musaafir/utils/constants.dart';
 
@@ -16,7 +17,7 @@ class _MainNavState extends State<MainNav> {
     HomeScreen(),
     CalendarScreen(),
     HomeScreen(),
-    HomeScreen(),
+    MessagesScreen(),
     ProfileScreen(),
   ];
 

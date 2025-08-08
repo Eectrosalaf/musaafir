@@ -7,6 +7,7 @@ import 'package:musaafir/screens/editprofile.dart';
 import 'package:musaafir/screens/forgotpassword.dart';
 import 'package:musaafir/screens/login.dart';
 import 'package:musaafir/screens/mainscreen.dart';
+import 'package:musaafir/screens/messagelist.dart';
 import 'package:musaafir/screens/onboarding.dart';
 import 'package:musaafir/screens/signup.dart';
 import 'package:musaafir/screens/splash.dart';
@@ -38,10 +39,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Musaafir',
       debugShowCheckedModeBanner: false,
-      initialRoute: '/home',
+      initialRoute: '/splash',
       routes: {
        '/home': (context) => const HomeScreen(),
-          '/': (context) => const SplashScreen(),
+          '/splash': (context) => const SplashScreen(),
           '/onboarding': (context) => const OnboardingScreen(),
           '/login': (context) => const LoginScreen(), 
           '/signup': (context) => const SignupScreen(),
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
           '/view': (context) => const ViewScreen(),
            '/main': (context) => const MainNav(),
            '/calendar': (context) => const CalendarScreen(),
+          '/message': (context) => const MessagesScreen(),
       }
     );
   }
