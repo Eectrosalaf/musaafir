@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:musaafir/providers/calendar_provider.dart';
 import 'package:musaafir/screens/calendar.dart';
+import 'package:musaafir/screens/chatscreen.dart';
 import 'package:musaafir/screens/details.dart';
 import 'package:musaafir/screens/editprofile.dart';
 import 'package:musaafir/screens/forgotpassword.dart';
@@ -11,6 +12,7 @@ import 'package:musaafir/screens/messagelist.dart';
 import 'package:musaafir/screens/onboarding.dart';
 import 'package:musaafir/screens/signup.dart';
 import 'package:musaafir/screens/splash.dart';
+import 'package:musaafir/screens/userselection.dart';
 import 'package:musaafir/screens/view.dart';
 import 'package:provider/provider.dart';
 import 'providers/user_provider.dart';
@@ -54,6 +56,8 @@ class MyApp extends StatelessWidget {
            '/main': (context) => const MainNav(),
            '/calendar': (context) => const CalendarScreen(),
           '/message': (context) => const MessagesScreen(),
+          '/userselection': (context) => const UserSelectionScreen(),
+          // '/chat': (context) => const ChatScreen(chatId: '', otherUserId: '',),
       }
     );
   }

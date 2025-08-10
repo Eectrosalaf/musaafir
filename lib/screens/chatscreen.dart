@@ -20,6 +20,41 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final currentUser = FirebaseAuth.instance.currentUser;
+  String? otherUserName;
+  bool isLoadingUserName = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOtherUserName();
+  }
+
+  Future<void> _loadOtherUserName() async {
+    try {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.otherUserId)
+          .get();
+
+      if (userDoc.exists) {
+        final userData = userDoc.data() as Map<String, dynamic>;
+        setState(() {
+          otherUserName = userData['name'] ?? 'Unknown User';
+          isLoadingUserName = false;
+        });
+      } else {
+        setState(() {
+          otherUserName = 'Unknown User';
+          isLoadingUserName = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        otherUserName = 'Unknown User';
+        isLoadingUserName = false;
+      });
+    }
+  }
 
   void sendMessage() async {
     final text = _controller.text.trim();
@@ -38,10 +73,13 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     // Update last message in chat doc
-    await FirebaseFirestore.instance.collection('chats').doc(widget.chatId).update({
-      'lastMessage': text,
-      'lastTimestamp': FieldValue.serverTimestamp(),
-    });
+    await FirebaseFirestore.instance
+        .collection('chats')
+        .doc(widget.chatId)
+        .update({
+          'lastMessage': text,
+          'lastTimestamp': FieldValue.serverTimestamp(),
+        });
 
     _controller.clear();
   }
@@ -58,13 +96,27 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("User ${widget.otherUserId}", style: const TextStyle(color: Colors.black)),
-            const Text("Active Now", style: TextStyle(color: Colors.green, fontSize: 12)),
+            Text(
+              isLoadingUserName
+                  ? "Loading..."
+                  : (otherUserName ?? "Unknown User"),
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Text(
+              "Active Now",
+              style: TextStyle(color: Colors.green, fontSize: 12),
+            ),
           ],
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.black,
+          ),
+          onPressed: () => Navigator.pushNamed(context, '/userselection'),
         ),
         actions: [
           IconButton(
@@ -95,19 +147,56 @@ class _ChatScreenState extends State<ChatScreen> {
                     final msg = messages[index];
                     final isMe = msg['senderId'] == currentUser!.uid;
                     return Align(
-                      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                      alignment: isMe
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                       child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        margin: EdgeInsets.only(
+                          top: 4,
+                          bottom: 4,
+                          left: isMe ? 50 : 0,
+                          right: isMe ? 0 : 50,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
-                          color: isMe ? DesignColors.primaryColor : Colors.white,
-                          borderRadius: BorderRadius.circular(16),
+                          gradient: isMe
+                              ? LinearGradient(
+                                  colors: [
+                                    DesignColors.primaryColor,
+                                    DesignColors.primaryColor.withOpacity(0.8),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                )
+                              : null,
+                          color: isMe ? null : Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20),
+                            topRight: const Radius.circular(20),
+                            bottomLeft: isMe
+                                ? const Radius.circular(20)
+                                : const Radius.circular(4),
+                            bottomRight: isMe
+                                ? const Radius.circular(4)
+                                : const Radius.circular(20),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Text(
                           msg['text'],
                           style: TextStyle(
-                            color: isMe ? Colors.white : Colors.black,
+                            color: isMe ? Colors.white : Colors.black87,
                             fontSize: SizeConfig.blockH! * 3.5,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -149,5 +238,11 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

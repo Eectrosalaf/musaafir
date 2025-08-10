@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:musaafir/screens/user_selection_screen.dart';
+import 'package:musaafir/screens/userselection.dart';
 import '../utils/constants.dart';
 import '../utils/screensize.dart';
 import 'chatscreen.dart';
@@ -14,7 +16,7 @@ class MessagesScreen extends StatelessWidget {
 
     for (var doc in query.docs) {
       if ((doc['users'] as List).contains(userId2)) {
-        return doc.id; // Chat already exists
+        return doc.id;
       }
     }
 
@@ -26,6 +28,18 @@ class MessagesScreen extends StatelessWidget {
     return docRef.id;
   }
 
+  Future<Map<String, dynamic>?> getUserData(String userId) async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      return doc.data();
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -33,147 +47,300 @@ class MessagesScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // For demo, use placeholder user ID. In production, fetch from user provider.
-          final otherUserId = 'placeholdeUserId';
-          startChat(currentUser!.uid, otherUserId).then((chatId) {
+        onPressed: () async {
+          final result = await Navigator.push<Map<String, dynamic>>(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const UserSelectionScreen(),
+            ),
+          );
+          
+          if (result != null) {
+            final chatId = await startChat(currentUser!.uid, result['userId']);
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) =>
-                    ChatScreen(chatId: chatId, otherUserId: otherUserId),
+                builder: (_) => ChatScreen(
+                  chatId: chatId,
+                  otherUserId: result['userId'],
+                ),
               ),
             );
-          });
+          }
         },
-        icon: const Icon(Icons.chat,color: Colors.white,),
-        label: const Text('Start Chat',style: TextStyle(color: Colors.white),),
-        backgroundColor: DesignColors.primaryColor, // Optional: your color
+        icon: const Icon(Icons.add_comment_rounded, color: Colors.white),
+        label: const Text('New Chat', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        backgroundColor: DesignColors.primaryColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16), // Change radius as needed
+          borderRadius: BorderRadius.circular(20),
         ),
+        elevation: 4,
       ),
       backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text('Messages', style: TextStyle(color: Colors.black)),
+        title: Text(
+          'Messages', 
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: SizeConfig.blockH! * 5,
+          )
+        ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Colors.black,
+            color: DesignColors.primaryColor,
+            size: SizeConfig.blockH! * 6,
           ),
           onPressed: () => Navigator.pushReplacementNamed(context, '/main'),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit, color: Colors.black),
+            icon: Icon(
+              Icons.search,
+              color: DesignColors.primaryColor,
+              size: SizeConfig.blockH! * 6,
+            ),
             onPressed: () {},
           ),
         ],
       ),
       body: Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(SizeConfig.blockH! * 2),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: "Search for chats & messages",
-              prefixIcon: const Icon(Icons.search),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide.none,
-              ),
+        children: [
+          // Header section with greeting
+          Container(
+            width: double.infinity,
+            color: Colors.white,
+            padding: EdgeInsets.fromLTRB(
+              SizeConfig.blockH! * 5,
+              SizeConfig.blockV! * 1,
+              SizeConfig.blockH! * 5,
+              SizeConfig.blockV! * 3,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Recent Conversations',
+                  style: TextStyle(
+                    fontSize: SizeConfig.blockH! * 4,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        Expanded(
-          child: StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, userSnapshot) {
-              if (!userSnapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              final currentUser = userSnapshot.data!;
-              return StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('chats')
-                    .where('users', arrayContains: currentUser.uid)
-                    .orderBy('lastTimestamp', descending: true)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final chats = snapshot.data!.docs;
-                  if (chats.isEmpty) {
-                    return const Center(child: Text("No messages yet"));
-                  }
-                  return ListView.builder(
-                    itemCount: chats.length,
-                    itemBuilder: (context, index) {
-                      final chat = chats[index];
-                      final users = List<String>.from(chat['users']);
-                      final otherUserId = users.firstWhere(
-                        (id) => id != currentUser.uid,
-                      );
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: AssetImage('images/aaaa.webp'),
+          
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('chats')
+                  .where('users', arrayContains: currentUser!.uid)
+                  .orderBy('lastTimestamp', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: DesignColors.primaryColor,
+                    ),
+                  );
+                }
+                
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.chat_bubble_outline,
+                          size: SizeConfig.blockH! * 20,
+                          color: Colors.grey[300],
                         ),
-                        title: Text(
-                          "User $otherUserId",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        SizedBox(height: SizeConfig.blockV! * 3),
+                        Text(
+                          "No conversations yet",
+                          style: TextStyle(
+                            fontSize: SizeConfig.blockH! * 5,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black54,
+                          ),
                         ),
-                        subtitle: Text(chat['lastMessage'] ?? ""),
-                        trailing: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              chat['lastTimestamp'] != null
-                                  ? _formatTime(chat['lastTimestamp'].toDate())
-                                  : "",
-                              style: const TextStyle(fontSize: 12),
+                        SizedBox(height: SizeConfig.blockV! * 1),
+                        Text(
+                          "Start a new chat to connect with others",
+                          style: TextStyle(
+                            fontSize: SizeConfig.blockH! * 3.5,
+                            color: Colors.black38,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.chat_bubble_outline,
+                          size: SizeConfig.blockH! * 20,
+                          color: Colors.grey[300],
+                        ),
+                        SizedBox(height: SizeConfig.blockV! * 3),
+                        Text(
+                          "No conversations yet",
+                          style: TextStyle(
+                            fontSize: SizeConfig.blockH! * 5,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        SizedBox(height: SizeConfig.blockV! * 1),
+                        Text(
+                          "Start a new chat to connect with others",
+                          style: TextStyle(
+                            fontSize: SizeConfig.blockH! * 3.5,
+                            color: Colors.black38,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                
+                final chats = snapshot.data!.docs;
+                
+                return ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockH! * 2),
+                  itemCount: chats.length,
+                  itemBuilder: (context, index) {
+                    final chat = chats[index];
+                    final users = List<String>.from(chat['users']);
+                    final otherUserId = users.firstWhere(
+                      (id) => id != currentUser.uid,
+                    );
+                    
+                    return FutureBuilder<Map<String, dynamic>?>(
+                      future: getUserData(otherUserId),
+                      builder: (context, userSnapshot) {
+                        final userData = userSnapshot.data;
+                        final userName = userData?['name'] ?? 'Unknown User';
+                        final lastMessage = chat['lastMessage'] ?? "";
+                        final timestamp = chat['lastTimestamp'];
+                        
+                        return Container(
+                          margin: EdgeInsets.symmetric(vertical: SizeConfig.blockV! * 0.5),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: SizeConfig.blockH! * 4,
+                              vertical: SizeConfig.blockV! * 1,
                             ),
-                            const Icon(
-                              Icons.done_all,
-                              color: Colors.green,
-                              size: 18,
-                            ),
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ChatScreen(
-                                chatId: chat.id,
-                                otherUserId: otherUserId,
+                            leading: CircleAvatar(
+                              radius: SizeConfig.blockH! * 6,
+                              backgroundColor: DesignColors.primaryColor.withOpacity(0.1),
+                              child: Text(
+                                userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                                style: TextStyle(
+                                  color: DesignColors.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: SizeConfig.blockH! * 5,
+                                ),
                               ),
                             ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-              );
-            },
+                            title: Text(
+                              userName,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: SizeConfig.blockH! * 4,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            subtitle: Text(
+                              lastMessage.isEmpty ? "No messages yet" : lastMessage,
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: SizeConfig.blockH! * 3.2,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  timestamp != null
+                                      ? _formatTime(timestamp.toDate())
+                                      : "",
+                                  style: TextStyle(
+                                    fontSize: SizeConfig.blockH! * 2.8,
+                                    color: Colors.black38,
+                                  ),
+                                ),
+                                SizedBox(height: SizeConfig.blockV! * 0.5),
+                                if (lastMessage.isNotEmpty)
+                                  Icon(
+                                    Icons.done_all,
+                                    color: Colors.green,
+                                    size: SizeConfig.blockH! * 4,
+                                  ),
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ChatScreen(
+                                    chatId: chat.id,
+                                    otherUserId: otherUserId,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-    
+        ],
+      ),
+    );
   }
 
   String _formatTime(DateTime dt) {
     final now = DateTime.now();
-    if (dt.day == now.day && dt.month == now.month && dt.year == now.year) {
+    final difference = now.difference(dt);
+    
+    if (difference.inDays == 0) {
       return "${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
+    } else if (difference.inDays == 1) {
+      return "Yesterday";
+    } else if (difference.inDays < 7) {
+      return "${difference.inDays}d ago";
     } else {
       return "${dt.day}/${dt.month}/${dt.year}";
     }
