@@ -1,8 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:musaafir/providers/calendar_provider.dart';
 import 'package:musaafir/screens/calendar.dart';
-import 'package:musaafir/screens/chatscreen.dart';
 import 'package:musaafir/screens/details.dart';
 import 'package:musaafir/screens/editprofile.dart';
 import 'package:musaafir/screens/forgotpassword.dart';

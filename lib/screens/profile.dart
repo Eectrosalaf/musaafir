@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/user_provider.dart';
@@ -17,6 +18,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Future.microtask(
       () => Provider.of<UserProvider>(context, listen: false).fetchUserData(),
     );
+  }
+ FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+   Future<void> signOut() async {
+    try {
+      await firebaseAuth.signOut();
+    } catch (e) {
+      print('Error signing out: $e');
+    }
   }
 
   @override
@@ -43,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       backgroundColor: Colors.white,
                       child: IconButton(
                         icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                        onPressed: () => Navigator.of(context).maybePop(),
+                        onPressed: () => Navigator.pushReplacementNamed(context, '/main'),
                       ),
                     ),
                     Text(
@@ -170,6 +179,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         icon: Icons.info_outline,
                         label: "Version",
                         onTap: () {},
+                      ),
+                       _ProfileMenuItem(
+                        icon: Icons.logout_sharp,
+                        label: "Sign Out",
+                        onTap: () {
+                          signOut();
+
+                           Navigator.pushReplacementNamed(context, '/login');
+                        },
                       ),
                     ],
                   ),

@@ -157,14 +157,13 @@ class _EditField extends StatelessWidget {
   final String initialValue;
   final void Function(String?) onSaved;
   final TextInputType? keyboardType;
-  final Widget? prefix;
+  ///final Widget? prefix;
 
   const _EditField({
     required this.label,
     required this.initialValue,
     required this.onSaved,
     this.keyboardType,
-    this.prefix,
   });
 
   @override
@@ -188,7 +187,7 @@ class _EditField extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
-            prefixIcon: prefix,
+            //prefixIcon: prefix,
             suffixIcon: const Icon(Icons.check, color: Colors.orange),
           ),
         ),

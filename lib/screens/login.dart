@@ -123,39 +123,62 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onPressed: () async {
-                      String output = await authenticationMethods.signInUser(
-                        email: emailController.text,
-                        password: passwordController.text,
+                      // Show loading indicator
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) =>
+                            const Center(child: CircularProgressIndicator(color: Colors.blue,)),
                       );
 
-                      emailController.clear();
-
-                      passwordController.clear();
-
-                      if (output == 'success') {
-                        Navigator.pushNamed(
-                          // ignore: use_build_context_synchronously
-                          context,
-                          '/main',
+                      try {
+                        String output = await authenticationMethods.signInUser(
+                          email: emailController.text,
+                          password: passwordController.text,
                         );
-                      } else {
+
+                        // Hide loading indicator
+                        Navigator.pop(context);
+
+                        // Clear fields
+                        emailController.clear();
+                        passwordController.clear();
+
+                        if (output == 'success') {
+                          Navigator.pushReplacementNamed(context, '/main');
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Login Failed'),
+                              content: Text(output),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        // Hide loading indicator
+                        Navigator.pop(context);
+
                         showDialog(
-                          // ignore: use_build_context_synchronously
                           context: context,
-                          builder: (context) {
-                            return AnimatedContainer(
-                              duration: const Duration(seconds: 10),
-                              curve: Curves.linearToEaseOut,
-                              child: Notifyalert(
-                                onpressed: () {
-                                  Navigator.pushNamed(context, '/login');
-                                },
-                                title: 'Opps!',
-                                btntitle: 'Log in Again',
-                                details: output,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Error'),
+                            content: const Text(
+                              'An unexpected error occurred. Please try again.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('OK'),
                               ),
-                            );
-                          },
+                            ],
+                          ),
                         );
                       }
                     },

@@ -138,13 +138,20 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     onPressed: () async {
+                      
                       String output = await authenticationMethods.signUpUser(
                         name: nameController.text,
                         email: emailController.text,
                         password: passwordController.text,
                       );
+                       
+                    
 
                       if (output == 'success') {
+                        const Center(child: CircularProgressIndicator(color: Colors.blue,));
+                        nameController.clear();
+                        emailController.clear();
+                        passwordController.clear();
                         showDialog(
                           // ignore: use_build_context_synchronously
                           context: context,

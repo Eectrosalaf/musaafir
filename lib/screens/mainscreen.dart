@@ -3,6 +3,7 @@ import 'package:musaafir/screens/calendar.dart';
 import 'package:musaafir/screens/home.dart';
 import 'package:musaafir/screens/messagelist.dart';
 import 'package:musaafir/screens/profile.dart';
+import 'package:musaafir/screens/search.dart';
 import 'package:musaafir/utils/constants.dart';
 
 class MainNav extends StatefulWidget {
@@ -16,7 +17,7 @@ class _MainNavState extends State<MainNav> {
   final List<Widget> screens = [
     HomeScreen(),
     CalendarScreen(),
-    HomeScreen(),
+    SearchScreen(),
     MessagesScreen(),
     ProfileScreen(),
   ];
