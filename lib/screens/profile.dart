@@ -159,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       _ProfileMenuItem(
                         icon: Icons.person,
-                        label: "Proile",
+                        label: "Profile",
                         onTap: () {},
                       ),
                       _ProfileMenuItem(
