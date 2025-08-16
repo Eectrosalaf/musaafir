@@ -281,8 +281,8 @@ class _LoginScreenState extends State<LoginScreen> {
       radius: SizeConfig.blockH! * 5,
       child: Image.asset(
         'images/ab.webp',
-        height: SizeConfig.blockH! * 7,
-        width: SizeConfig.blockH! * 7,
+        height: SizeConfig.blockV! * 20,
+        width: SizeConfig.blockV! * 20,
       ),
 
       //Icon(icon, color: color, size: SizeConfig.blockH! * 8),

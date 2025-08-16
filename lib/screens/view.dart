@@ -97,6 +97,7 @@ class ViewScreen extends StatelessWidget {
                   ),
                   SizedBox(height: SizeConfig.blockV! * 1),
                   Row(
+                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Icon(Icons.location_on,
                           color: DesignColors.primaryColor, size: 18),
@@ -109,9 +110,24 @@ class ViewScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 12),
+                      Spacer(),
+                      AvatarStack(
+                        avatarImages: [
+                          'images/a.jpg',
+                          'images/a.jpg',
+                          'images/a.jpg',
+                        ],
+                        extraCount: 50,
+                        size: SizeConfig.blockH! * 7,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: SizeConfig.blockV! * 2),
+                  // Avatars row
+                  Row(
+                    children: [
                       Icon(Icons.access_time, color: Colors.black54, size: 18),
-                      SizedBox(width: 4),
-                      Text(
+                       Text(
                         "45 Minutes",
                         style: TextStyle(
                           color: Colors.black54,
@@ -120,25 +136,8 @@ class ViewScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: SizeConfig.blockV! * 2),
-                  // Avatars row
-                  SizedBox(
-                    height: SizeConfig.blockV! * 6,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: List.generate(
-                        5,
-                        (i) => Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            backgroundImage: AssetImage('images/aaaa.webp'),
-                            radius: SizeConfig.blockH! * 3.5,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                      //SizedBox(width: 4),
+                     
                   SizedBox(height: SizeConfig.blockV! * 2),
                   SizedBox(
                     width: double.infinity,
@@ -233,6 +232,66 @@ class _FloatingCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+class AvatarStack extends StatelessWidget {
+  final List<String> avatarImages; // List of asset paths
+  final int extraCount;
+  final double size;
+
+  const AvatarStack({
+    super.key,
+    required this.avatarImages,
+    required this.extraCount,
+    this.size = 28,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> avatars = [];
+    for (int i = 0; i < avatarImages.length; i++) {
+      avatars.add(
+        Positioned(
+          left: i * (size * 0.6),
+          child: CircleAvatar(
+            radius: size / 2,
+            backgroundColor: Colors.white,
+            child: CircleAvatar(
+              radius: size / 2 - 2,
+              backgroundImage: AssetImage(avatarImages[i]),
+            ),
+          ),
+        ),
+      );
+    }
+    // Add the "+N" circle
+    avatars.add(
+      Positioned(
+        left: avatarImages.length * (size * 0.6),
+        child: CircleAvatar(
+          radius: size / 2,
+          backgroundColor: Colors.white,
+          child: CircleAvatar(
+            radius: size / 2 - 2,
+            backgroundColor: Colors.blue[50],
+            child: Text(
+              '+$extraCount',
+              style: TextStyle(
+                fontSize: size * 0.45,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return SizedBox(
+      width: (avatarImages.length + 1) * (size * 0.6) + size * 0.4,
+      height: size,
+      child: Stack(children: avatars),
     );
   }
 }

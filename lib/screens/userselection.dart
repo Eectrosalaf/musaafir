@@ -34,6 +34,41 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
     return docRef.id;
   }
 
+  Future<Map<String, dynamic>?> getLastChatInfo(String currentUserId, String otherUserId) async {
+    try {
+      final chats = FirebaseFirestore.instance.collection('chats');
+      final query = await chats.where('users', arrayContains: currentUserId).get();
+
+      for (var doc in query.docs) {
+        if ((doc['users'] as List).contains(otherUserId)) {
+          final data = doc.data();
+          return {
+            'lastMessage': data['lastMessage'] ?? '',
+            'lastTimestamp': data['lastTimestamp'],
+          };
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  String _formatTime(DateTime dt) {
+    final now = DateTime.now();
+    final difference = now.difference(dt);
+    
+    if (difference.inDays == 0) {
+      return "${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
+    } else if (difference.inDays == 1) {
+      return "Yesterday";
+    } else if (difference.inDays < 7) {
+      return "${difference.inDays}d ago";
+    } else {
+      return "${dt.day}/${dt.month}/${dt.year}";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -111,33 +146,99 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                     final user = users[index];
                     final userData = user.data() as Map<String, dynamic>;
                     final userName = userData['name'] ?? 'Unknown User';
-                    final userEmail = userData['email'] ?? '';
 
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: DesignColors.primaryColor.withOpacity(0.2),
-                        child: Text(
-                          userName.isNotEmpty ? userName[0].toUpperCase() : 'User',
-                          style: TextStyle(
-                            color: DesignColors.primaryColor,
-                            fontWeight: FontWeight.bold,
+                    return FutureBuilder<Map<String, dynamic>?>(
+                      future: getLastChatInfo(currentUser!.uid, user.id),
+                      builder: (context, chatSnapshot) {
+                        final chatData = chatSnapshot.data;
+                        final lastMessage = chatData?['lastMessage'] ?? '';
+                        final timestamp = chatData?['lastTimestamp'];
+
+                        return Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: SizeConfig.blockH! * 4,
+                            vertical: SizeConfig.blockV! * 0.5,
                           ),
-                        ),
-                      ),
-                      title: Text(
-                        userName,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(userEmail),
-                      onTap: () async {
-                        final chatId = await startChat(currentUser!.uid, user.id);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ChatScreen(
-                              chatId: chatId,
-                              otherUserId: user.id,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: SizeConfig.blockH! * 4,
+                              vertical: SizeConfig.blockV! * 1,
                             ),
+                            leading: CircleAvatar(
+                              radius: SizeConfig.blockH! * 6,
+                              backgroundColor: DesignColors.primaryColor.withOpacity(0.2),
+                              child: Text(
+                                userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                                style: TextStyle(
+                                  color: DesignColors.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: SizeConfig.blockH! * 5,
+                                ),
+                              ),
+                            ),
+                            title: Text(
+                              userName,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: SizeConfig.blockH! * 4,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            subtitle: Text(
+                              lastMessage.isEmpty 
+                                  ? "No previous messages" 
+                                  : lastMessage,
+                              style: TextStyle(
+                                color: lastMessage.isEmpty ? Colors.black38 : Colors.black54,
+                                fontSize: SizeConfig.blockH! * 3.2,
+                                fontStyle: lastMessage.isEmpty ? FontStyle.italic : FontStyle.normal,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                if (timestamp != null)
+                                  Text(
+                                    _formatTime(timestamp.toDate()),
+                                    style: TextStyle(
+                                      fontSize: SizeConfig.blockH! * 2.8,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                SizedBox(height: SizeConfig.blockV! * 0.5),
+                                Icon(
+                                  Icons.chat_bubble_outline,
+                                  color: DesignColors.primaryColor,
+                                  size: SizeConfig.blockH! * 4,
+                                ),
+                              ],
+                            ),
+                            onTap: () async {
+                              final chatId = await startChat(currentUser!.uid, user.id);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ChatScreen(
+                                    chatId: chatId,
+                                    otherUserId: user.id,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         );
                       },

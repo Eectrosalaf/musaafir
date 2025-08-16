@@ -88,7 +88,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   userProvider.isLoading
                       ? "..."
-                      : (userProvider.userName ?? "User"),
+                      : "${userProvider.firstName ?? ''} ${userProvider.lastName ?? ''}".trim().isEmpty 
+                          ? (userProvider.userName ?? "User")
+                          : "${userProvider.firstName ?? ''} ${userProvider.lastName ?? ''}".trim(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: SizeConfig.blockH! * 5,
@@ -185,14 +187,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         label: "Sign Out",
                         onTap: () {
                           signOut();
-
                            Navigator.pushReplacementNamed(context, '/login');
                         },
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: SizeConfig.blockV! * 2),
               ],
             ),
           ),
@@ -206,6 +206,7 @@ class _StatColumn extends StatelessWidget {
   final String label;
   final String value;
   final Color color;
+
   const _StatColumn({
     required this.label,
     required this.value,
@@ -219,9 +220,9 @@ class _StatColumn extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            color: color,
             fontWeight: FontWeight.bold,
-            fontSize: SizeConfig.blockH! * 4,
+            fontSize: SizeConfig.blockH! * 4.5,
+            color: color,
           ),
         ),
         SizedBox(height: SizeConfig.blockV! * 0.5),
@@ -229,8 +230,9 @@ class _StatColumn extends StatelessWidget {
           label,
           style: TextStyle(
             color: Colors.black54,
-            fontSize: SizeConfig.blockH! * 3.2,
+            fontSize: SizeConfig.blockH! * 3,
           ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
@@ -241,6 +243,7 @@ class _ProfileMenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+
   const _ProfileMenuItem({
     required this.icon,
     required this.label,
@@ -250,15 +253,12 @@ class _ProfileMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: DesignColors.primaryColor),
+      leading: Icon(icon, color: Colors.black54),
       title: Text(
         label,
-        style: TextStyle(
-          fontWeight: FontWeight.w500,
-          fontSize: SizeConfig.blockH! * 3.8,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.w500),
       ),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: onTap,
     );
   }

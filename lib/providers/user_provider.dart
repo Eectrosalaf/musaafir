@@ -1,6 +1,8 @@
+// ignore_for_file: unnecessary_this
+
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserProvider extends ChangeNotifier {
   String? userName;
@@ -35,13 +37,25 @@ class UserProvider extends ChangeNotifier {
   }) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
+      // Update the fields
+      this.firstName = firstName ?? this.firstName;
+      this.lastName = lastName ?? this.lastName;
+      this.location = location ?? this.location;
+      this.mobile = mobile ?? this.mobile;
+      
+      // Update userName to be firstName + lastName
+      userName = "${this.firstName ?? ''} ${this.lastName ?? ''}".trim();
+      
       await FirebaseFirestore.instance.collection('users').doc(uid).update({
-        'firstName': firstName ?? this.firstName,
-        'lastName': lastName ?? this.lastName,
-        'location': location ?? this.location,
-        'mobile': mobile ?? this.mobile,
+        'firstName': this.firstName,
+        'lastName': this.lastName,
+        'location': this.location,
+        'mobile': this.mobile,
+        'name': this.userName, // Also update the name field
       });
-      await fetchUserData();
+      
+      notifyListeners(); // Notify listeners immediately
+      await fetchUserData(); // Refresh from database
     }
   }
 }

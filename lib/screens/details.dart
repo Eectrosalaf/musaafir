@@ -23,7 +23,7 @@ class DetailsScreen extends StatelessWidget {
               child: Image.asset(
                 'images/aa.jpg',
                 width: SizeConfig.screenW,
-                height: SizeConfig.screenH! * 0.32,
+                height: SizeConfig.screenH! * 0.5,
                 fit: BoxFit.cover,
               ),
             ),
@@ -40,29 +40,23 @@ class DetailsScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          "Details",
+                          "Niladri Reservoir",
                           style: TextStyle(
-                            color: DesignColors.primaryColor,
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: SizeConfig.blockH! * 4.5,
+                            fontSize: SizeConfig.blockH! *5.5,
                           ),
                         ),
                         const Spacer(),
                         CircleAvatar(
                           backgroundColor: Colors.white,
-                          child: Icon(Icons.person, color: DesignColors.primaryColor),
+                          child:Image.asset('images/aaaa.webp')  //AssetImage('images/aaaa.webp'),
                         ),
                       ],
                     ),
                     SizedBox(height: SizeConfig.blockV! * 2),
                     // Title and rating
-                    Text(
-                      "Niladri Reservoir",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: SizeConfig.blockH! * 5,
-                      ),
-                    ),
+                    
                     SizedBox(height: SizeConfig.blockV! * 0.5),
                     Row(
                       children: [
@@ -104,13 +98,13 @@ class DetailsScreen extends StatelessWidget {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: List.generate(
-                          5,
+                          6,
                           (i) => Padding(
-                            padding: EdgeInsets.only(right: 8),
+                            padding: EdgeInsets.all(8),
                             child: CircleAvatar(
                               backgroundColor: Colors.white,
-                              backgroundImage: AssetImage('images/aaaa.webp'),
-                              radius: SizeConfig.blockH! * 3.5,
+                              backgroundImage: AssetImage('images/aaa.jpg',),
+                              radius: SizeConfig.blockH! * 8,
                             ),
                           ),
                         ),

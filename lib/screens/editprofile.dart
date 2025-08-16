@@ -30,6 +30,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
+    
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     await userProvider.updateProfile(
       firstName: firstName,
@@ -37,6 +38,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       location: location,
       mobile: mobile,
     );
+    
+    // Navigate back to profile screen
     Navigator.pop(context);
   }
 
@@ -138,7 +141,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               initialValue: mobile ?? '',
                               keyboardType: TextInputType.phone,
                               onSaved: (val) => mobile = val,
-                              //prefix: const Text("+88 "),
                             ),
                           ],
                         ),
@@ -157,7 +159,6 @@ class _EditField extends StatelessWidget {
   final String initialValue;
   final void Function(String?) onSaved;
   final TextInputType? keyboardType;
-  ///final Widget? prefix;
 
   const _EditField({
     required this.label,
@@ -187,7 +188,6 @@ class _EditField extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
-            //prefixIcon: prefix,
             suffixIcon: const Icon(Icons.check, color: Colors.orange),
           ),
         ),

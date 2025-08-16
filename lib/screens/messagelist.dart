@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:musaafir/screens/user_selection_screen.dart';
 import 'package:musaafir/screens/userselection.dart';
 import '../utils/constants.dart';
 import '../utils/screensize.dart';
@@ -110,7 +109,6 @@ class MessagesScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Header section with greeting
           Container(
             width: double.infinity,
             color: Colors.white,
@@ -140,7 +138,6 @@ class MessagesScreen extends StatelessWidget {
               stream: FirebaseFirestore.instance
                   .collection('chats')
                   .where('users', arrayContains: currentUser!.uid)
-                  .orderBy('lastTimestamp', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -217,7 +214,18 @@ class MessagesScreen extends StatelessWidget {
                   );
                 }
                 
+                // Sort chats manually by lastTimestamp
                 final chats = snapshot.data!.docs;
+                chats.sort((a, b) {
+                  final aTimestamp = a['lastTimestamp'] as Timestamp?;
+                  final bTimestamp = b['lastTimestamp'] as Timestamp?;
+                  
+                  if (aTimestamp == null && bTimestamp == null) return 0;
+                  if (aTimestamp == null) return 1;
+                  if (bTimestamp == null) return -1;
+                  
+                  return bTimestamp.compareTo(aTimestamp);
+                });
                 
                 return ListView.builder(
                   padding: EdgeInsets.symmetric(horizontal: SizeConfig.blockH! * 2),
@@ -291,7 +299,7 @@ class MessagesScreen extends StatelessWidget {
                                 Text(
                                   timestamp != null
                                       ? _formatTime(timestamp.toDate())
-                                      : "",
+                                      : "Now",
                                   style: TextStyle(
                                     fontSize: SizeConfig.blockH! * 2.8,
                                     color: Colors.black38,
