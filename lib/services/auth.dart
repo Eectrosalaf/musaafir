@@ -70,8 +70,8 @@ Future<String> signInUser(
         rethrow;
       }
       
-      if (result?.user != null) {
-        print("Sign in successful: ${result!.user!.uid}");
+      if (result.user != null) {
+        print("Sign in successful: ${result.user!.uid}");
         output = "success";
       }
     } on FirebaseAuthException catch (e) {

@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:musaafir/services/auth.dart';
 import 'package:musaafir/services/google_auth.dart';
-import 'package:musaafir/widgets/alert.dart';
 import '../utils/constants.dart';
 import '../utils/screensize.dart';
 

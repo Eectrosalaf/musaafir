@@ -228,7 +228,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                               ],
                             ),
                             onTap: () async {
-                              final chatId = await startChat(currentUser!.uid, user.id);
+                              final chatId = await startChat(currentUser.uid, user.id);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
